@@ -1,0 +1,16 @@
+version: '3.7'
+
+services:
+  # Serviço (container) do Rockylinux, contendo o PHP e o código Laravel, assim como as dependências necessárias.
+  assinador:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: app
+    restart: always
+    working_dir: /var/www/html
+    ports:
+      - "9000:80"
+    volumes:
+      - ./:/var/www/html
+      - /var/www/html/vendor
