@@ -19,7 +19,7 @@ class PaginaInicialRequest extends SoloRequest
     {
         return [
             RequestOptions::VERIFY => false,
-            'proxy' => 'http://localhost.charlesproxy.com:8888',
+//            'proxy' => 'http://localhost.charlesproxy.com:8888',
             'allow_redirects' => false
         ];
     }
