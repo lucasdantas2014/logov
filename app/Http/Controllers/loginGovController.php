@@ -117,6 +117,8 @@ class loginGovController extends Controller
         $responseAutorize = $loginGovConnector->send($requestAutorize);
 
         dump($responseAutorize->headers());
+        dump($responseAutorize->body());
+        dump($responseAutorize);
 
         $novosCookies = $this->getCookiesString($responseAutorize);
 
