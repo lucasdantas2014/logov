@@ -26,7 +26,6 @@ class loginGovController extends Controller
         dump($response->header('set-cookie'));
         dump($response->header('Set-Cookie'));
         if (empty($cookies)) {
-            dump('Cookies nao encontrados');
             return '';
         }
 
@@ -48,13 +47,17 @@ class loginGovController extends Controller
     public function login_sicaf(Request $request) {
 
         $sicafConnector = new SicafConnector();
+        dump('pegando valores');
         $login = $request->input('login');
         $senha = $request->input('senha');
 
+        dump('acessando pagina sicaf');
         list($sessionId, $cookies) = $this->pegarSessionIdSicaf($sicafConnector);
 
+        dump('setando cookies iniciais');
         $sicafConnector->headers()->add('Cookie', $cookies);
 
+        dump('realizando login...');
         $queryParams = $this->realizarLoginComGov($sessionId, $login, $senha);
 
         if (empty($queryParams)) {
@@ -108,6 +111,7 @@ class loginGovController extends Controller
     private function realizarLoginComGov(string $sessionId, $login, $senha)
     {
         $loginGovConnector = new LoginGovConnector();
+        dump("requisixao autoriza");
         $requestAutorize = new AutorizeGovRequest($sessionId);
 
         $responseAutorize = $loginGovConnector->send($requestAutorize);
@@ -131,10 +135,12 @@ class loginGovController extends Controller
 
         preg_match('/h-captcha.*sitekey=\"(.{1,50})\" data-callback/', $responseLoginParte1->body(), $regexHcaptcha);
 
+        dump('resolvendo capthaa');
         $respostaCaptcha = $this->resolverCaptcha($regexHcaptcha[1], $url);
 
         $loginGovSenha = new loginSenhaGovRequest($regexAutorizacao[1], $regexCsrf[1], $login, $senha, $respostaCaptcha);
 
+        dump("senha");
         $responseLoginParte2 = $loginGovConnector->send($loginGovSenha);
 
         $cookiesAposLogin = $this->getCookiesString($responseLoginParte2);
