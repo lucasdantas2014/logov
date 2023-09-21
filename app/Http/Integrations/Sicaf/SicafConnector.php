@@ -45,12 +45,12 @@ class SicafConnector extends Connector
             RequestOptions::VERIFY => false,
 //            'proxy' => 'http://localhost.charlesproxy.com:8888',
             'allow_redirects' => false,
-            'curl' => [
-                32 => 393216,#CURLOPT_SSLVERSION => CURL_SSLVERSION_MAX_TLSv1_2,
-                //64 => false,#CURLOPT_SSL_VERIFYPEER
-                //81 => false#CURLOPT_SSL_VERIFYHOST
-//                10228 => ['Proxy-Connection:']
-            ],
+//            'curl' => [
+//                32 => 393216,#CURLOPT_SSLVERSION => CURL_SSLVERSION_MAX_TLSv1_2,
+//                //64 => false,#CURLOPT_SSL_VERIFYPEER
+//                //81 => false#CURLOPT_SSL_VERIFYHOST
+////                10228 => ['Proxy-Connection:']
+//            ],
         ];
     }
 }
