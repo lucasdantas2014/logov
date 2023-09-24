@@ -8,6 +8,12 @@ use Saloon\Traits\Plugins\AcceptsJson;
 
 class LoginGovConnector extends Connector
 {
+
+    public function __construct(
+        protected string $proxy = ''
+    )
+    {}
+
     /**
      * The Base URL of the API
      *
@@ -42,7 +48,7 @@ class LoginGovConnector extends Connector
     {
         return [
             RequestOptions::VERIFY => false,
-//            'proxy' => 'http://localhost.charlesproxy.com:8888',
+            'proxy' => $this->proxy,
             'allow_redirects' => false,
 //            'curl' => [
 //                32 => 393216,#CURLOPT_SSLVERSION => CURL_SSLVERSION_MAX_TLSv1_2,

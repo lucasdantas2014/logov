@@ -46,10 +46,13 @@ class loginGovController extends Controller
     }
     public function login_sicaf(Request $request) {
 
-        $sicafConnector = new SicafConnector();
+        $proxy = $request->input('proxy') ?? '';
+
+        $sicafConnector = new SicafConnector($proxy);
         dump('pegando valores');
         $login = $request->input('login');
         $senha = $request->input('senha');
+
 
         dump('acessando pagina sicaf');
         list($sessionId, $cookies) = $this->pegarSessionIdSicaf($sicafConnector);
@@ -58,10 +61,10 @@ class loginGovController extends Controller
         $sicafConnector->headers()->add('Cookie', $cookies);
 
         dump('realizando login...');
-        $queryParams = $this->realizarLoginComGov($sessionId, $login, $senha);
+        $queryParams = $this->realizarLoginComGov($sessionId, $login, $senha, $proxy);
 
         if (empty($queryParams)) {
-            $queryParams = $this->realizarLoginComGov($sessionId, $login, $senha);
+            $queryParams = $this->realizarLoginComGov($sessionId, $login, $senha, $proxy);
         }
 
         $queryParams['state'] = $sessionId;
@@ -108,9 +111,9 @@ class loginGovController extends Controller
         ];
     }
 
-    private function realizarLoginComGov(string $sessionId, $login, $senha)
+    private function realizarLoginComGov(string $sessionId, $login, $senha, $proxy)
     {
-        $loginGovConnector = new LoginGovConnector();
+        $loginGovConnector = new LoginGovConnector($proxy);
         dump("requisixao autoriza");
         $requestAutorize = new AutorizeGovRequest($sessionId);
 
