@@ -21,5 +21,5 @@ Route::get('/', function () {
 
 Route::get('teste', [TesteController::class, 'teste']);
 
-Route::get('teste2', [loginGovController::class, 'teste']);
+Route::get('teste2', [loginGovController::class, 'login_sicaf2']);
 Route::post('login-sicaf', [loginGovController::class, 'login_sicaf']);

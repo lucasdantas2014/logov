@@ -79,6 +79,40 @@ class loginGovController extends Controller
             200);
     }
 
+    public function login_sicaf2() {
+
+        $proxy =  '';
+
+        $sicafConnector = new SicafConnector($proxy);
+        dump('pegando valores');
+        $login = '133.908.814-25';
+        $senha = '1234Fr@n!';
+
+        dump('acessando pagina sicaf');
+        list($sessionId, $cookies) = $this->pegarSessionIdSicaf($sicafConnector);
+
+        dump('setando cookies iniciais');
+        $sicafConnector->headers()->add('Cookie', $cookies);
+
+        dump('realizando login...');
+        $queryParams = $this->realizarLoginComGov($sessionId, $login, $senha, $proxy);
+
+        if (empty($queryParams)) {
+            $queryParams = $this->realizarLoginComGov($sessionId, $login, $senha, $proxy);
+        }
+
+        $queryParams['state'] = $sessionId;
+
+        $this->acessarPagina($sicafConnector, $queryParams);
+
+        return response()->json(
+            [
+                'sessionId' => $sessionId,
+                'mensagem' => 'login efetuado com sucesso'
+            ],
+            200);
+    }
+
     private function acessarPagina(Connector $sicafConnector, $queryParams) {
 
         $paginaRetorno = new PaginaRetornoLoginRequest();
