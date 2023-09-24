@@ -43,7 +43,7 @@ class SicafConnector extends Connector
     {
         return [
             RequestOptions::VERIFY => false,
-            'proxy' => 'http://localhost.charlesproxy.com:8888',
+//            'proxy' => 'http://localhost.charlesproxy.com:8888',
             'allow_redirects' => false,
             'curl' => [
                 32 => 393216,#CURLOPT_SSLVERSION => CURL_SSLVERSION_MAX_TLSv1_2,
