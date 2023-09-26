@@ -84,7 +84,7 @@ class loginGovController extends Controller
         $proxy =  '';
 
         $sicafConnector = new SicafConnector($proxy);
-        dump('pegando valores');
+        dump('pegando valores - novo');
         $login = '133.908.814-25';
         $senha = '1234Fr@n!';
 
