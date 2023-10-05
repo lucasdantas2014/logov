@@ -48,7 +48,7 @@ class SicafConnector extends Connector
     protected function defaultConfig(): array
     {
         return [
-            RequestOptions::VERIFY => false,
+            RequestOptions::VERIFY => true,
             'proxy' => $this->proxy,
             'allow_redirects' => false,
 //            'curl' => [
