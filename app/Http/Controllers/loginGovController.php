@@ -130,6 +130,7 @@ class loginGovController extends Controller
 
         $response = $sicafConnector->send($paginaInicial);
         // dd($response->headers());
+        dump($response->body());
 
         preg_match('/(\/sicaf-web\/index.jsf;jsession.*)\" e/',
             $response->body(),
