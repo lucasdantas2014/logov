@@ -1,6 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Console\Commands;
+
+use Illuminate\Console\Command;
 
 use App\Http\Integrations\LoginGov\LoginGovConnector;
 use App\Http\Integrations\LoginGov\Requests\AutorizeRequest as AutorizeGovRequest;
@@ -16,72 +18,27 @@ use Illuminate\Http\Request;
 use Saloon\Contracts\Connector;
 use Saloon\Contracts\Response;
 
-class loginGovController extends Controller
+class TesteAplicacaoCommand extends Command
 {
+    /**
+     * The name and signature of the console command.
+     *
+     * @var string
+     */
+    protected $signature = 'app:teste-aplicacao-command';
 
-    private function getCookiesString(Response $response) {
+    /**
+     * The console command description.
+     *
+     * @var string
+     */
+    protected $description = 'Command description';
 
-        $cookies = $response->header('set-cookie') ?? $response->header('Set-Cookie');
-
-        dump($response->header('set-cookie'));
-        dump($response->header('Set-Cookie'));
-        if (empty($cookies)) {
-            return '';
-        }
-
-        if (is_array($cookies)) {
-            $cookiesString = '';
-            $cont = 0;
-            foreach ($cookies as $cookie) {
-                if ($cont > 0) {
-                    $cookiesString .= ';';
-                }
-                $cookiesString .= explode(';', $cookie)[0];
-                $cont++;
-            }
-            return $cookiesString;
-
-        }
-        return explode(';', $cookies)[0];
-    }
-    public function login_sicaf(Request $request) {
-
-        $proxy = $request->input('proxy') ?? '';
-
-        $sicafConnector = new SicafConnector($proxy);
-        dump('pegando valores');
-        $login = $request->input('login');
-        $senha = $request->input('senha');
-
-
-        dump('acessando pagina sicaf');
-        list($sessionId, $cookies) = $this->pegarSessionIdSicaf($sicafConnector);
-        // dd($sessionId);
-
-        dump('setando cookies iniciais');
-        $sicafConnector->headers()->add('Cookie', $cookies);
-
-        dump('realizando login...');
-        $queryParams = $this->realizarLoginComGov($sessionId, $login, $senha, $proxy);
-
-        if (empty($queryParams)) {
-            $queryParams = $this->realizarLoginComGov($sessionId, $login, $senha, $proxy);
-        }
-
-        $queryParams['state'] = $sessionId;
-
-        $this->acessarPagina($sicafConnector, $queryParams);
-
-        return response()->json(
-            [
-                'sessionId' => $sessionId,
-                'mensagem' => 'login efetuado com sucesso'
-            ],
-            200);
-    }
-
-    public function login_sicaf2() {
-
+    /**
+     * Execute the console command.
+     */
+    public function handle()
+    {
         $proxy =  '';
 
         $sicafConnector = new SicafConnector($proxy);
@@ -106,12 +63,10 @@ class loginGovController extends Controller
 
         $this->acessarPagina($sicafConnector, $queryParams);
 
-        return response()->json(
-            [
+        dump([
                 'sessionId' => $sessionId,
                 'mensagem' => 'login efetuado com sucesso'
-            ],
-            200);
+            ]);
     }
 
     private function acessarPagina(Connector $sicafConnector, $queryParams) {
@@ -129,7 +84,7 @@ class loginGovController extends Controller
         $paginaInicial = new PaginaLoginRequest();
 
         $response = $sicafConnector->send($paginaInicial);
-        // dd($response->headers());
+        dump($response->headers());
 
         preg_match('/(\/sicaf-web\/index.jsf;jsession.*)\" e/',
             $response->body(),
@@ -224,5 +179,31 @@ class loginGovController extends Controller
         ]);
 
         return $result->code;
+    }
+
+    private function getCookiesString(Response $response) {
+
+        $cookies = $response->header('set-cookie') ?? $response->header('Set-Cookie');
+
+        dump($response->header('set-cookie'));
+        dump($response->header('Set-Cookie'));
+        if (empty($cookies)) {
+            return '';
+        }
+
+        if (is_array($cookies)) {
+            $cookiesString = '';
+            $cont = 0;
+            foreach ($cookies as $cookie) {
+                if ($cont > 0) {
+                    $cookiesString .= ';';
+                }
+                $cookiesString .= explode(';', $cookie)[0];
+                $cont++;
+            }
+            return $cookiesString;
+
+        }
+        return explode(';', $cookies)[0];
     }
 }
